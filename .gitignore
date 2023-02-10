@@ -21,7 +21,9 @@
 *.exe
 
 # Programmer Database
-.pdb
+*.pdb
+*.recipe
+*.ilk
 
 # Log and Error Files
 *.log
