@@ -36,3 +36,4 @@
 .vs/
 packages/
 physx/bin/
+*.dir/
