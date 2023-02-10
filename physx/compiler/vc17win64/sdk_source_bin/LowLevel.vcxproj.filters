@@ -191,9 +191,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="E:\Repos\PhysX41\physx\source\compiler\cmake\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="API Includes">
       <UniqueIdentifier>{E103AEE1-B2AB-3BCD-9CC2-225F5BF43573}</UniqueIdentifier>
     </Filter>

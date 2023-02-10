@@ -218,9 +218,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="E:\Repos\PhysX41\physx\source\compiler\cmake\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="filebuf">
       <UniqueIdentifier>{EC4DAE79-5492-3D57-B4E6-22C58AD528B2}</UniqueIdentifier>
     </Filter>

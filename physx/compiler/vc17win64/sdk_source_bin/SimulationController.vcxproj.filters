@@ -227,9 +227,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="E:\Repos\PhysX41\physx\source\compiler\cmake\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="include">
       <UniqueIdentifier>{96B792E4-0C61-3941-B002-2A02E4CDC55C}</UniqueIdentifier>
     </Filter>

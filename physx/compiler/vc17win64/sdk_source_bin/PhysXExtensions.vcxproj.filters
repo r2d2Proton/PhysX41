@@ -410,9 +410,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="E:\Repos\PhysX41\physx\source\compiler\cmake\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Object Include="E:\Repos\PhysX41\physx\compiler\vc17win64\sdk_source_bin\FastXml.dir\$(Configuration)\PsFastXml.obj">
       <Filter>Object Libraries</Filter>
     </Object>

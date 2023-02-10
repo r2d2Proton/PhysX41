@@ -212,9 +212,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="E:\Repos\PhysX41\physx\samples\compiler\cmake\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="CCTShared">
       <UniqueIdentifier>{327DDCA9-9A33-3128-BD90-0830B8F5DABB}</UniqueIdentifier>
     </Filter>

@@ -254,9 +254,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="E:\Repos\PhysX41\physx\source\compiler\cmake\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Dynamics Includes">
       <UniqueIdentifier>{7F1ABB0D-638C-3C77-A26A-F87F0FD674D3}</UniqueIdentifier>
     </Filter>

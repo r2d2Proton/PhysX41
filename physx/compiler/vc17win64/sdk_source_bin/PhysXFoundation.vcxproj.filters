@@ -290,9 +290,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="E:\Repos\PhysX41\physx\source\compiler\cmake\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="E:\Repos\PhysX41\physx\source\compiler\resource_x64\PhysXFoundation.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
