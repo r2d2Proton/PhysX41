@@ -38,11 +38,7 @@
 #include <PxTkFile.h>
 #include <PsUtilities.h>
 
-#if defined(RENDERER_ENABLE_DIRECT3D9)
-	#include <d3d9.h>
-	#include <d3dx9.h>
-	#include <XInput.h>
-#endif
+#include <XInput.h>
 
 #if defined(RENDERER_ENABLE_DIRECT3D11)
 #pragma warning(push)
@@ -315,36 +311,6 @@ SamplePlatform*		SampleFramework::createPlatform(SampleRenderer::RendererWindow*
 	return SamplePlatform::platform();
 }
 
-void* WindowsPlatform::initializeD3D9()
-{
-	m_library   = 0;
-	if(m_hwnd)
-	{
-#if defined(D3D_DEBUG_INFO)
-#define D3D9_DLL "d3d9d.dll"
-#else
-#define D3D9_DLL "d3d9.dll"
-#endif
-		m_library = LoadLibraryA(D3D9_DLL);
-		RENDERER_ASSERT(m_library, "Could not load " D3D9_DLL ".");
-		if(!m_library)
-		{
-			MessageBoxA(0, "Could not load " D3D9_DLL ". Please install the latest DirectX End User Runtime available at www.microsoft.com/directx.", "Renderer Error.", MB_OK);
-		}
-#undef D3D9_DLL
-		if(m_library)
-		{
-			typedef IDirect3D9* (WINAPI* LPDIRECT3DCREATE9)(UINT SDKVersion);
-			LPDIRECT3DCREATE9 pDirect3DCreate9 = (LPDIRECT3DCREATE9)GetProcAddress(m_library, "Direct3DCreate9");
-			RENDERER_ASSERT(pDirect3DCreate9, "Could not find Direct3DCreate9 function.");
-			if(pDirect3DCreate9)
-			{
-				m_d3d = pDirect3DCreate9(D3D_SDK_VERSION);
-			}
-		}
-	}
-	return m_d3d;
-}
 
 void WindowsPlatform::showCursor(bool show)
 {
@@ -357,14 +323,16 @@ void WindowsPlatform::showCursor(bool show)
 	}
 }
 
-void* WindowsPlatform::compileProgram(void * context, 
-										const char* assetDir, 
-										const char *programPath, 
-										physx::PxU64 profile, 
-										const char* passString, 
-										const char *entry, 
-										const char **args)
-
+void* WindowsPlatform::compileProgram
+(
+	void * context,
+	const char* assetDir, 
+	const char *programPath, 
+	PxU64 profile, 
+	const char* passString, 
+	const char *entry, 
+	const char **args
+)
 {
 #if defined(RENDERER_ENABLE_CG)
 	char fullpath[1024];
@@ -404,8 +372,6 @@ void* WindowsPlatform::compileProgram(void * context,
 
 WindowsPlatform::WindowsPlatform(SampleRenderer::RendererWindow* _app) :
 SamplePlatform(_app), 
-m_d3d(NULL),
-m_d3dDevice(NULL),
 m_dxgiFactory(NULL),
 m_dxgiSwap(NULL),
 m_d3d11Device(NULL),
@@ -413,7 +379,6 @@ m_d3d11DeviceContext(NULL),
 m_hwnd(0),
 m_hdc(0),
 m_hrc(0),
-m_library(NULL),
 m_dxgiLibrary(NULL),
 m_d3d11Library(NULL),
 m_ownsWindow(false),
@@ -422,8 +387,6 @@ m_destroyWindow(false),
 m_hasFocus(true),
 m_vsync(false)
 {
-	m_library = 0;
-
 	// adjust ShowCursor display counter to be 0 or -1
 	m_showCursor = true;
 	PxI32 count = ShowCursor(true);
@@ -439,15 +402,6 @@ m_vsync(false)
 WindowsPlatform::~WindowsPlatform()
 {
 	RENDERER_ASSERT(!m_ownsWindow || m_hwnd==0, "RendererWindow was not closed before being destroyed.");
-	if(m_d3d)
-	{
-		m_d3d->Release();
-	}
-	if(m_library) 
-	{	
-		FreeLibrary(m_library);
-		m_library = 0;
-	}
 	if(m_dxgiLibrary) 
 	{
 		FreeLibrary(m_dxgiLibrary);
@@ -458,15 +412,6 @@ WindowsPlatform::~WindowsPlatform()
 		FreeLibrary(m_d3d11Library);
 		m_d3d11Library = 0;
 	}
-}
-
-bool WindowsPlatform::isD3D9ok()
-{
-	if(m_library) 
-	{
-		return true;
-	}
-	return false;
 }
 
 bool WindowsPlatform::hasFocus() const
@@ -880,110 +825,6 @@ void WindowsPlatform::setOGLVsync(bool on)
 		wglSwapIntervalEXT(m_vsync ? 1 : 0);
 	}
 #endif
-}
-
-physx::PxU32 WindowsPlatform::initializeD3D9Display(void * d3dPresentParameters, 
-																char* m_deviceName, 
-																physx::PxU32& width, 
-																physx::PxU32& height,
-																void * m_d3dDevice_out)
-{
-	D3DPRESENT_PARAMETERS* m_d3dPresentParams = static_cast<D3DPRESENT_PARAMETERS*>(d3dPresentParameters);
-
-	UINT       adapter    = D3DADAPTER_DEFAULT;
-	D3DDEVTYPE deviceType = D3DDEVTYPE_HAL;
-
-	// check to see if fullscreen is requested...
-	bool fullscreen = false;
-	WINDOWINFO wininfo = {0};
-	if(GetWindowInfo(m_hwnd, &wininfo))
-	{
-		if(wininfo.dwStyle & WS_POPUP)
-		{
-			fullscreen = true;
-		}
-	}
-
-	// search for supported adapter mode.
-	if(fullscreen)
-	{
-		RECT rect = {0};
-		GetWindowRect(m_hwnd, &rect);
-		m_d3dPresentParams->BackBufferFormat = D3DFMT_X8R8G8B8;
-		width = (m_d3dPresentParams->BackBufferWidth  = rect.right-rect.left);
-		height = (m_d3dPresentParams->BackBufferHeight = rect.bottom-rect.top);
-
-		bool foundAdapterMode = false;
-		const UINT numAdapterModes = m_d3d->GetAdapterModeCount(0, m_d3dPresentParams->BackBufferFormat);
-		for(UINT i=0; i<numAdapterModes; i++)
-		{
-			D3DDISPLAYMODE mode = {0};
-			m_d3d->EnumAdapterModes(0, m_d3dPresentParams->BackBufferFormat, i, &mode);
-			if(mode.Width       == m_d3dPresentParams->BackBufferWidth  &&
-				mode.Height      == m_d3dPresentParams->BackBufferHeight &&
-				mode.RefreshRate >  m_d3dPresentParams->FullScreen_RefreshRateInHz)
-			{
-				m_d3dPresentParams->FullScreen_RefreshRateInHz = mode.RefreshRate;
-				foundAdapterMode = true;
-			}
-		}
-		RENDERER_ASSERT(foundAdapterMode, "Unable to find supported fullscreen Adapter Mode.");
-		if(!foundAdapterMode) fullscreen = false;
-	}
-
-	// enable fullscreen mode.
-	if(fullscreen)
-	{
-		m_d3dPresentParams->Windowed = 0;
-	}
-
-#if defined(RENDERER_ENABLE_NVPERFHUD)
-	// NvPerfHud Support.
-	UINT numAdapters = m_d3d->GetAdapterCount();
-	for(UINT i=0; i<numAdapters; i++)
-	{
-		D3DADAPTER_IDENTIFIER9 identifier;
-		m_d3d->GetAdapterIdentifier(i, 0, &identifier);
-		if(strstr(identifier.Description, "PerfHUD"))
-		{
-			adapter    = i;
-			deviceType = D3DDEVTYPE_REF;
-			break;
-		}
-	}
-#endif
-
-	D3DADAPTER_IDENTIFIER9 adapterIdentifier;
-	m_d3d->GetAdapterIdentifier(adapter, 0, &adapterIdentifier);
-	strncpy_s(m_deviceName, 256, adapterIdentifier.Description, 256);
-
-	HRESULT res = m_d3d->CreateDevice( adapter, deviceType,
-		m_hwnd,
-		D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_MULTITHREADED,
-		m_d3dPresentParams, &m_d3dDevice);
-	*(static_cast<IDirect3DDevice9**>(m_d3dDevice_out)) = m_d3dDevice;
-	return res;
-}
-
-physx::PxU32 WindowsPlatform::D3D9Present()
-{
-	return m_d3dDevice->Present(0, 0, m_hwnd, 0);
-}
-physx::PxU64 WindowsPlatform::getD3D9TextureFormat(SampleRenderer::RendererTexture2D::Format format)
-{
-	D3DFORMAT d3dFormat = D3DFMT_UNKNOWN;
-	switch(format)
-	{
-	case SampleRenderer::RendererTexture2D::FORMAT_B8G8R8A8: d3dFormat = D3DFMT_A8R8G8B8; break;
-	case SampleRenderer::RendererTexture2D::FORMAT_A8:       d3dFormat = D3DFMT_A8;       break;
-	case SampleRenderer::RendererTexture2D::FORMAT_R32F:     d3dFormat = D3DFMT_R32F;     break;
-	case SampleRenderer::RendererTexture2D::FORMAT_DXT1:     d3dFormat = D3DFMT_DXT1;     break;
-	case SampleRenderer::RendererTexture2D::FORMAT_DXT3:     d3dFormat = D3DFMT_DXT3;     break;
-	case SampleRenderer::RendererTexture2D::FORMAT_DXT5:     d3dFormat = D3DFMT_DXT5;     break;
-	case SampleRenderer::RendererTexture2D::FORMAT_D16:      d3dFormat = D3DFMT_D16;      break;
-	case SampleRenderer::RendererTexture2D::FORMAT_D24S8:    d3dFormat = D3DFMT_D24S8;    break;
-	}
-	return static_cast<physx::PxU64>(d3dFormat);
 }
 
 physx::PxU64 WindowsPlatform::getD3D11TextureFormat(SampleRenderer::RendererTexture2D::Format format)

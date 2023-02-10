@@ -28,7 +28,6 @@
 #include <Renderer.h>
 #include <RendererDesc.h>
 #include "ogl/OGLRenderer.h"
-#include "d3d9/D3D9Renderer.h"
 #include "d3d11/D3D11Renderer.h"
 #include "null/NULLRenderer.h"
 #include <RendererMesh.h>

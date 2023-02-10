@@ -1,0 +1,36 @@
+# User-Specific Visual Studio Project Files
+# containts local debug directory: <LocalDebuggerWorkingDirectory>$(SolutionDir)\.bin\Editor\Debug\x64</LocalDebuggerWorkingDirectory>
+# Keep the .user file for the time being
+# *.vcxproj.user
+
+# Compiled Object files
+*.obj
+*.cso
+*.dxil
+
+# Precompiled Headers
+*.pch
+
+# Compiled Static libraries
+*.lib
+
+# Compiled Dynamic libraries
+*.dll
+
+# Executables
+*.exe
+
+# Programmer Database
+.pdb
+
+# Log and Error Files
+*.log
+*.tlog
+*.err
+
+# Directories
+.bin/
+.obj/
+.vs/
+packages/
+physx/bin/

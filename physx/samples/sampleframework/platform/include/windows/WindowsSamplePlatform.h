@@ -31,89 +31,91 @@
 #include <SamplePlatform.h>
 #include <windows/WindowsSampleUserInput.h>
 
-struct IDirect3D9;
-struct IDirect3DDevice9;
-
 struct ID3D11Device;
 struct ID3D11DeviceContext;
 struct IDXGIFactory1;
 struct IDXGISwapChain;
+
+using physx::PxU32;
+using physx::PxU64;
+using physx::PxVec2;
+
+using SampleRenderer::RendererWindow;
+using SampleRenderer::Renderer;
+using SampleRenderer::RendererDesc;
+using SampleRenderer::RendererTexture2D;
+
 
 namespace SampleFramework
 {
 	class WindowsPlatform : public SamplePlatform 
 	{
 	public:
-		explicit							WindowsPlatform(SampleRenderer::RendererWindow* _app);
+
+		explicit							WindowsPlatform(RendererWindow* _app);
 		virtual								~WindowsPlatform();
+
 		// System
 		virtual void						showCursor(bool);
-		virtual void						postRendererSetup(SampleRenderer::Renderer* renderer);
+		virtual void						postRendererSetup(Renderer* renderer);
 		virtual size_t						getCWD(char* path, size_t len);
 		virtual void						setCWDToEXE(void);
-		virtual bool						openWindow(physx::PxU32& width, 
-														physx::PxU32& height,
-														const char* title,
-														bool fullscreen);
-		virtual bool						useWindow(physx::PxU64 hwnd);
+		virtual bool						openWindow(PxU32& width, PxU32& height, const char* title, bool fullscreen);
+		virtual bool						useWindow(PxU64 hwnd);
 		virtual void						update();
 		virtual bool						isOpen();
 		virtual bool						closeWindow();
 		virtual bool						hasFocus() const;
-		virtual void						getTitle(char *title, physx::PxU32 maxLength) const;
+		virtual void						getTitle(char *title, PxU32 maxLength) const;
 		virtual void						setTitle(const char *title);
 		virtual void						setFocus(bool b);
-		virtual physx::PxU64				getWindowHandle();
-		virtual void						setWindowSize(physx::PxU32 width, 
-															physx::PxU32 height);
-		virtual void						getWindowSize(physx::PxU32& width, physx::PxU32& height);
+		virtual PxU64						getWindowHandle();
+		virtual void						setWindowSize(PxU32 width, PxU32 height);
+		virtual void						getWindowSize(PxU32& width, PxU32& height);
 		virtual void						showMessage(const char* title, const char* message);
-		virtual bool						saveBitmap(const char* fileName, 
-														physx::PxU32 width, 
-														physx::PxU32 height, 
-														physx::PxU32 sizeInBytes, 
-														const void* data);
-		virtual void*						compileProgram(void * context, 
-															const char* assetDir, 
-															const char *programPath, 
-															physx::PxU64 profile, 
-															const char* passString, 
-															const char *entry, 
-															const char **args);
-		virtual void*						initializeD3D9();
-		virtual bool						isD3D9ok();
+		virtual bool						saveBitmap(const char* fileName, PxU32 width, PxU32 height, PxU32 sizeInBytes, const void* data);
+
+		virtual void*						compileProgram
+											(
+												void * context, 
+												const char* assetDir,
+												const char *programPath, 
+												PxU64 profile, 
+												const char* passString, 
+												const char *entry, 
+												const char **args
+											);
+
 		virtual void*						initializeD3D11();
 		virtual bool						isD3D11ok();
+
 		// Rendering
-		virtual void						initializeOGLDisplay(const SampleRenderer::RendererDesc& desc, 
-																physx::PxU32& width, 
-																physx::PxU32& height);
+		virtual void						initializeOGLDisplay(const RendererDesc& desc, PxU32& width, PxU32& height);
 		virtual void						postInitializeOGLDisplay();
 		virtual void						setOGLVsync(bool on);
-		virtual physx::PxU32				initializeD3D9Display(void * presentParameters, 
-																char* m_deviceName, 
-																physx::PxU32& width, 
-																physx::PxU32& height,
-																void * m_d3dDevice_out);
-		virtual physx::PxU32				initializeD3D11Display(void *dxgiSwapChainDesc, 
-																char *m_deviceName, 
-																physx::PxU32& width, 
-																physx::PxU32& height,
-																void *m_d3dDevice_out,
-																void *m_d3dDeviceContext_out,
-																void *m_dxgiSwap_out);
 
-		virtual physx::PxU32				D3D9Present();
-		virtual physx::PxU64				getD3D9TextureFormat(SampleRenderer::RendererTexture2D::Format format);
-		virtual physx::PxU32				D3D11Present(bool vsync);
-		virtual physx::PxU64				getD3D11TextureFormat(SampleRenderer::RendererTexture2D::Format format);
+		virtual PxU32						initializeD3D11Display
+											(
+												void *dxgiSwapChainDesc, 
+												char *m_deviceName, 
+												PxU32& width, 
+												PxU32& height,
+												void *m_d3dDevice_out,
+												void *m_d3dDeviceContext_out,
+												void *m_dxgiSwap_out
+											);
+
+		virtual PxU32						D3D11Present(bool vsync);
+		virtual PxU64						getD3D11TextureFormat(RendererTexture2D::Format format);
 		virtual bool						makeContextCurrent();
 		virtual void						freeDisplay();
 		virtual bool						isContextValid();
 		virtual void						swapBuffers();
-		virtual void						setupRendererDescription(SampleRenderer::RendererDesc& renDesc);
+		virtual void						setupRendererDescription(RendererDesc& renDesc);
+
 		// Input
 		virtual void						doInput();
+
 		// File System
 		virtual bool						makeSureDirectoryPathExists(const char* dirPath);
 
@@ -128,15 +130,12 @@ namespace SampleFramework
 		virtual void						setMouseCursorRecentering(bool val);
 		virtual bool						getMouseCursorRecentering() const;
 		
-
-		physx::PxVec2						getMouseCursorPos() const { return m_mouseCursorPos; }
-		void								setMouseCursorPos(const physx::PxVec2& pos) { m_mouseCursorPos = pos; }
+		PxVec2								getMouseCursorPos() const { return m_mouseCursorPos; }
+		void								setMouseCursorPos(const PxVec2& pos) { m_mouseCursorPos = pos; }
 		void								recenterMouseCursor(bool generateEvent);
 		void								setWorkaroundMouseMoved() { m_workaroundMouseMoved = true;  }
 	
 	protected:	
-		IDirect3D9*							m_d3d;
-		IDirect3DDevice9*					m_d3dDevice;
 		IDXGIFactory1*						m_dxgiFactory;
 		IDXGISwapChain*						m_dxgiSwap;
 		ID3D11Device*						m_d3d11Device;
@@ -144,7 +143,6 @@ namespace SampleFramework
 		HWND								m_hwnd;
 		HDC									m_hdc;
 		HGLRC								m_hrc;
-		HMODULE								m_library;
 		HMODULE								m_dxgiLibrary;
 		HMODULE								m_d3d11Library;
 		bool								m_ownsWindow;

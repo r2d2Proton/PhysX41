@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\Repos\PhysX41\physx\source\task\src\TaskManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\Repos\PhysX41\physx\include\task\PxCpuDispatcher.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repos\PhysX41\physx\include\task\PxTask.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repos\PhysX41\physx\include\task\PxTaskDefine.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\Repos\PhysX41\physx\include\task\PxTaskManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="E:\Repos\PhysX41\physx\source\compiler\cmake\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{96B792E4-0C61-3941-B002-2A02E4CDC55C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{60C1A2FD-1D7E-36FB-A2B4-8F7D3007A721}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

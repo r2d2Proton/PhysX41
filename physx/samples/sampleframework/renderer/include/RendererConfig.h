@@ -84,7 +84,6 @@
 // Platform specific configuration...
 #if defined(WIN32) || defined(WIN64)
 	#define RENDERER_WINDOWS
-	#define RENDERER_ENABLE_DIRECT3D9
 	#define RENDERER_ENABLE_DIRECT3D11
 	#define RENDERER_ENABLE_NVPERFHUD
 	#define RENDERER_ENABLE_TGA_SUPPORT
