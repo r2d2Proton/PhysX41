@@ -91,7 +91,6 @@
 		//Removed this to get PhysX distro working without shipping CUDA.
 		//#define RENDERER_ENABLE_CUDA_INTEROP 
 	#endif
-	#define	DIRECT3D9_SUPPORT_D3DUSAGE_DYNAMIC
 	#if defined(WIN64)
 		#define RENDERER_64BIT
 	#endif
